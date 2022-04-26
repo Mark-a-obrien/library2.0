@@ -8,6 +8,7 @@ function Book(title, author, numPages, read) {
     this.numPages = numPages;
     this.read = read;
     this.id = Math.floor(Math.random() * 1000)
+    this.card = "";
 }
 
 // setter for read
@@ -15,9 +16,14 @@ Book.prototype.setRead = function(read) {
     this.read = read;
 }
 
+//getter for card
+Book.prototype.getCard = function() {
+    return this.card;
+} 
+
 // creates a card and displays it on the webpage
 Book.prototype.createCard = function () {
-    const card = document.createElement("div");
+    this.card = document.createElement("div");
     const title = document.createElement("p");
     const author = document.createElement("p");
     const numPages = document.createElement("p");
@@ -26,7 +32,7 @@ Book.prototype.createCard = function () {
     const remove = document.createElement("Button");
 
     // Adds classes the the elements created 
-    card.classList.add(`card`);
+    this.card.classList.add("card");
     
     // changes and adds a class to the read button depedning on input
     if (this.read === false) {
@@ -65,16 +71,17 @@ Book.prototype.createCard = function () {
     });
 
     remove.addEventListener("click", () => {
-        this.remove(card);
+        this.removeDisplay(this.card);
+        this.removeFromLibary();
     });
 
 
     // sets data-index to the books index in the libary array
-    card.dataset.index = libary.indexOf(this.id);
+    this.card.dataset.index = libary.indexOf(this.id);
 
-    card.append(title, author, numPages, id, read, remove);
+    this.card.append(title, author, numPages, id, read, remove);
 
-    return card;
+    return this.card;
 }
 
 
@@ -83,18 +90,32 @@ Book.prototype.createCard = function () {
 
 
 
-// removes the card from the website and the book libary array
-Book.prototype.remove = function (card) {
-    card.parentNode.removeChild(card);
+// removes the card from the website
+Book.prototype.removeDisplay = function (card) {
 
-    libary.splice(libary.indexOf(this), libary.indexOf(this) + 1);
+    try {
+        card.parentNode.removeChild(card);
+    } catch (error) {
+        
+    }
+    
+    
+
+}
+
+//removes the book from libary array
+Book.prototype.removeFromLibary = function () {
+    let fixPosition = 0; 
+    if (libary.indexOf(this) === 0) 
+        fixPosition = 1;
+
+    libary.splice(libary.indexOf(this), libary.indexOf(this) + fixPosition);
+    console.log(libary.indexOf(this));
     console.log(libary);
-
 }
 
 
-
-// add a book to the libary array
+// adds a book to the libary array
 function addBookToLibary(book) {
     libary.push(book);
 }
@@ -108,7 +129,7 @@ addBookToLibary(newBook);
 addBookToLibary(pamsBook);
 addBookToLibary(philsBook);
 
-console.log(libary.indexOf(philsBook));
+
 
 
 
@@ -128,6 +149,8 @@ function displayLibary() {
 const form = document.querySelector(".modal-form");
 const addBookBtn = document.querySelector(".add-book");
 const close = document.querySelector(".close");
+const cancel = document.querySelector(".cancel");
+const submit = document.querySelector(".submit");
 
 addBookBtn.addEventListener("click", () => {
     form.showModal();
@@ -137,15 +160,60 @@ close.addEventListener("click", () => {
     form.close();
 });
 
+cancel.addEventListener("click", () => {
+    form.close();
+});
+
 // closes the modal if background is clicked
 window.addEventListener("click",(event) => {
 
     if (event.target.classList.value == "modal-form")
-        form.close();
+        form.close();  
 });
 
+// submits the data
+submit.addEventListener("click", () => {
+    const newBook = getFormData();
+    
+    if (checkForm(newBook)) {
+        addBookToLibary(newBook);
+        refreshDisplayLibary();
+    }
+
+});
+
+// Checks if the form is filled out
+function checkForm(book) {
+    if (book.title.length <= 0 || book.author.length <= 0 || (book.numPages.length <= 0 || !Number.isInteger(Number(book.numPages))))
+        {
+            return false;
+        }
+    return true;
+}
 
 
+//Gets the data from the form
+function getFormData() {
+    const title = document.querySelector("#title");
+    const author = document.querySelector("#author");
+    const numPages = document.querySelector("#numPages");
+    const read = document.querySelector("#read");
+
+
+    const book = new Book(title.value, author.value, numPages.value, read.checked);
+
+    return book
+}
+
+function refreshDisplayLibary() {
+    for (let i = 0; i < libary.length; i++) {
+        const book = libary[i];
+        book.removeDisplay(book.getCard());
+    }
+
+    displayLibary();
+
+}
 
 
 
@@ -158,5 +226,6 @@ example.parentNode.removeChild(example);
 
 
 console.log(libary)
+
 
 displayLibary();
