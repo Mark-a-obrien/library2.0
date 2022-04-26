@@ -19,10 +19,12 @@ header {
 
 .container {
     display:grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, auto);
+    /* grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); */
 
     gap: 30px;
 }
+
 
 /* card */
 .card {
@@ -70,6 +72,21 @@ form.book-form {
 
 
 
+/* media queries */
+@media screen and (max-width: 992px) {
+    .container {
+        grid-template-columns: repeat(2, auto);
+    
+        gap: 30px;
+    }
+}
+
+@media screen and (max-width: 650px) {
+    .container {
+        grid-template-columns: repeat(1, auto);
+    }
+}
+
 
 
 
@@ -86,7 +103,7 @@ button {
 
 
 button.add-book {
-    position: absolute;
+    position: fixed;
     right: 2%;
     bottom: 3%;
 }
