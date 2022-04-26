@@ -103,7 +103,7 @@ button {
 
 
 button.add-book {
-    position: fixed;
+    position: sticky;
     right: 2%;
     bottom: 3%;
 }
