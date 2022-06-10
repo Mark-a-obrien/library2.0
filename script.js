@@ -16,7 +16,7 @@ Book.prototype.setRead = function(read) {
     this.read = read;
 }
 
-//getter for card
+// getter for card
 Book.prototype.getCard = function() {
     return this.card;
 } 
